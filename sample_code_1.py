@@ -29,14 +29,28 @@ def num_sentences(txt):
             word = w[0]
             tag = w[1]
 
-            #Add capitalized, non-proper nouns as marker for new sentence
+            #Assume capitalized, non-proper nouns is a marker for new sentence
             if word[0].isupper() and tag != 'NNP':
                 new_sentences.append(holder_sentence)
                 holder_sentence = ""
 
             holder_sentence += f"{word} "
 
-    return(len(tokenized_sentences) + len(new_sentences))
+    num_sentences = len(tokenized_sentences) + len(new_sentences)
+
+    #Return score based on where number of sentences falls in the range
+    if num_sentences < 10:
+        return 0
+    elif num_sentences in range(10,14):
+        return 1
+    elif num_sentences in range(13,17):
+        return 2
+    elif num_sentences in range(16,20):
+        return 3
+    elif num_sentences in range (20, 24):
+        return 4
+    else:
+        return 5
 
 
 
