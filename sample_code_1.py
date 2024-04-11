@@ -162,7 +162,7 @@ def main():
     # test = "After he and I finished my homework, I went to bed and also brushed my teeth."
     print(num_sentences(test))
 
-    getAverageSentCount()
+    # getAverageSentCount()
 
     #Holding here in case its needed for future use
     # "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
