@@ -144,11 +144,11 @@ def num_sentences(txt):
 
     #Calculate score 
     if num_sentences <= 0:
-        return 0
+        return 0, new_new_sentences
     elif num_sentences >= 22:
-        return 5
+        return 5, new_new_sentences
     else:
-        return (num_sentences**2 / 22.0**2) * 5
+        return (num_sentences**2 / 22.0**2) * 5, new_new_sentences
 
 
 
