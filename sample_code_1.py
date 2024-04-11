@@ -3,8 +3,50 @@ import nltk
 import pandas as pd
 from nltk import tokenize, word_tokenize
 from spellchecker import SpellChecker
-
 import os
+
+def getAverageSentCount():
+    """
+    Gets averages of number of sentences for high and low grades
+    """
+    index = pd.read_csv("essays_dataset/index.csv", delimiter=";")
+    pathToEssays = "essays_dataset/essays/"
+    essays = []
+
+    #read in essays 
+    for filename in os.listdir(pathToEssays):
+        file_path = os.path.join(pathToEssays, filename)
+
+        with open(file_path, 'r') as file:
+            text = file.read()
+            essays.append((filename, text))
+
+    #Count number of sentences for all essays
+    low_sentence_num = 0
+    low_sentence_totalSentenceNum = 0
+    high_sentence_num = 0
+    high_sentence_totalSentenceNum = 0
+    for name, essay in essays:
+        numSentence = num_sentences(essay)
+
+        df = index[index['filename'] == name]
+        score = df['grade'].iloc[0]
+
+        if score == "high":
+            high_sentence_num += 1
+            high_sentence_totalSentenceNum += numSentence
+        else:
+            low_sentence_num += 1
+            low_sentence_totalSentenceNum += numSentence
+
+    #compute averages
+    high_average = high_sentence_totalSentenceNum / high_sentence_num
+    low_average = low_sentence_totalSentenceNum / low_sentence_num
+
+    print(f"Average number of sentences in 'high' grades: {high_average}")
+    print(f"Average number of sentences in 'low' grades: {low_average}")
+
+
 
 def num_sentences(txt):
     """
@@ -54,6 +96,8 @@ def num_sentences(txt):
     num_missed_sentences = 0
     num_sentences_offset = 0
 
+    print(new_sentences)
+
     #Check for more missed sentences based on finite verbs
     for s in new_sentences:
         tokenized_words = word_tokenize(s)
@@ -81,20 +125,6 @@ def num_sentences(txt):
 
     num_sentences = num_missed_sentences + (len(new_sentences) - num_sentences_offset)
 
-    #Return score based on where number of sentences falls in the range
-    # if num_sentences < 10:
-    #     return 0
-    # elif num_sentences in range(10,14):
-    #     return 1
-    # elif num_sentences in range(13,17):
-    #     return 2
-    # elif num_sentences in range(16,20):
-    #     return 3
-    # elif num_sentences in range (20, 24):
-    #     return 4
-    # else:
-    #     return 5
-
     if num_sentences <= 0:
         return 0
     elif num_sentences >= 22:
@@ -107,48 +137,6 @@ def num_sentences(txt):
 def spelling_mistakes(txt):
     pass
 
-
-def getAverageSentCount():
-    """
-    Gets averages of number of sentences for high and low grades
-    """
-    index = pd.read_csv("essays_dataset/index.csv", delimiter=";")
-    pathToEssays = "essays_dataset/essays/"
-    essays = []
-
-    #read in essays 
-    for filename in os.listdir(pathToEssays):
-        file_path = os.path.join(pathToEssays, filename)
-
-        with open(file_path, 'r') as file:
-            text = file.read()
-            essays.append((filename, text))
-
-    #Count number of sentences for all essays
-    low_sentence_num = 0
-    low_sentence_totalSentenceNum = 0
-    high_sentence_num = 0
-    high_sentence_totalSentenceNum = 0
-    for name, essay in essays:
-        numSentence = num_sentences(essay)
-
-        df = index[index['filename'] == name]
-        score = df['grade'].iloc[0]
-
-        if score == "high":
-            high_sentence_num += 1
-            high_sentence_totalSentenceNum += numSentence
-        else:
-            low_sentence_num += 1
-            low_sentence_totalSentenceNum += numSentence
-
-    #compute averages
-    high_average = high_sentence_totalSentenceNum / high_sentence_num
-    low_average = low_sentence_totalSentenceNum / low_sentence_num
-
-    print(f"Average number of sentences in 'high' grades: {high_average}")
-    print(f"Average number of sentences in 'low' grades: {low_average}")
-
 def main():
 
     #Simply here for testing
@@ -157,7 +145,7 @@ def main():
 
     print(num_sentences(test))
 
-    getAverageSentCount()
+    # getAverageSentCount()
 
     #Holding here in case its needed for future use
     # "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
