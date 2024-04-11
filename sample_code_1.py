@@ -27,10 +27,7 @@ def getAverageSentCount():
     high_sentence_num = 0
     high_sentence_totalSentenceNum = 0
     for name, essay in essays:
-
-        # if name != "1812668.txt":
-        #     continue
-        numSentence = num_sentences(essay)
+        numSentence, new_sentences = num_sentences(essay)
 
         df = index[index['filename'] == name]
         score = df['grade'].iloc[0]
@@ -66,10 +63,12 @@ def num_sentences(txt):
     not_EOS_pos_tags = ["DT","IN", "CC","DT", "PRP$", "WP$", "IN", "VB", "VBP", "VBZ", "VBD"] #Tags that shouldn't be at end of sentence
     new_sentences = [] #holds all new sentences minus the last one
 
-    # Checking for missed sentences
+    # Checking for missed sentences based off of capitalization
     for s in tokenized_sentences:
         #get POS tags for analyzing
         tokenized_words = word_tokenize(s)
+        tokenized_words = ["I" if word == "i" else word for word in tokenized_words] #Helps POS tagger appropriately label "I"
+
         POS_tags = nltk.pos_tag(tokenized_words)
 
         #holds the new sentence
@@ -93,16 +92,16 @@ def num_sentences(txt):
         new_sentences.append(holder_sentence)
 
 
-    notfiniteVerbTags = ['VB', 'VBG', 'VBN']
+    notfiniteVerbTags = ['VB', 'VBG', 'VBN'] #Verb tags not included here are finite
     sub_coord_tags = ['CC', 'IN', 'WP', 'WDT', 'WP$', 'RB'] #Tags usually indicating subordinate/coordinate clauses
-    start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"]
+    start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"] #Tags that usually are in beginning of sentences
 
 
     new_new_sentences = []
     #Check for more missed sentences based on finite verbs
     for s in new_sentences:
         tokenized_words = word_tokenize(s)
-        tokenized_words = ["I" if word == "i" else word for word in tokenized_words]
+        tokenized_words = ["I" if word == "i" else word for word in tokenized_words] #Helps POS tagger appropriately label "I"
         POS_tags = nltk.pos_tag(tokenized_words)
 
         #Get index and tuple of finite verbs
@@ -163,7 +162,7 @@ def main():
     # test = "After he and I finished my homework, I went to bed and also brushed my teeth."
     print(num_sentences(test))
 
-    # getAverageSentCount()
+    getAverageSentCount()
 
     #Holding here in case its needed for future use
     # "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
