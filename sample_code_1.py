@@ -27,6 +27,9 @@ def getAverageSentCount():
     high_sentence_num = 0
     high_sentence_totalSentenceNum = 0
     for name, essay in essays:
+
+        # if name != "1812668.txt":
+        #     continue
         numSentence = num_sentences(essay)
 
         df = index[index['filename'] == name]
@@ -93,38 +96,57 @@ def num_sentences(txt):
 
     notfiniteVerbTags = ['VB', 'VBG', 'VBN']
     sub_coord_tags = ['CC', 'IN', 'WP', 'WDT', 'WP$', 'RB'] #Tags usually indicating subordinate/coordinate clauses
+    start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"]
     num_missed_sentences = 0
     num_sentences_offset = 0
 
-    print(new_sentences)
 
+    new_new_sentences = []
     #Check for more missed sentences based on finite verbs
     for s in new_sentences:
         tokenized_words = word_tokenize(s)
+        tokenized_words = ["I" if word == "i" else word for word in tokenized_words]
         POS_tags = nltk.pos_tag(tokenized_words)
 
-        #Get number of finite verbs in sentence
-        num_finite_verbs = sum(1 for item in POS_tags if item[1] not in notfiniteVerbTags and item[1][0] == "V")
+        #Get index and tuple of finite verbs
+        finite_verbs = [value for index, value in enumerate(POS_tags) if value[1] not in notfiniteVerbTags and value[1][0] == "V"]
+        num_finite_verbs = len(finite_verbs)
+
+        #Sentence already proper
         if num_finite_verbs <= 1:
+            new_new_sentences.append(s)
             continue
         
         #Get number of tags relating to subordinate/coordinate clauses
-        sum_sub_coord_tags = sum(1 for t in POS_tags if t[1] in sub_coord_tags)
-        sum_and_words = sum(1 for t in POS_tags if t[0].lower() == "and") #count number of ands
+        sum_sub_coord_tags = [value for index, value in enumerate(POS_tags) if value[1] in sub_coord_tags]
+        num_sub_coords = len(sum_sub_coord_tags)
 
         #More finite verbs than counted sub/coord clauses, should indicate a missed sentence
-        if sum_sub_coord_tags < num_finite_verbs:
-            #Prevent extra sentence count for sentences with "and"
-            if sum_and_words != 0:
-                sum_and_words += 1
+        if num_sub_coords < num_finite_verbs:
+            finite_count = 0
+            holder_sentence = ""
 
-            missed = (num_finite_verbs-sum_and_words)
-            num_missed_sentences += missed
-            if missed > 0:
-                num_sentences_offset += 1 #offset used later to not count this current sentence
+            #Go through tags to determine new sentence
+            for (word, tag) in POS_tags:
+                if num_finite_verbs > 1 and (word, tag) in finite_verbs:
+                    finite_count = 1
+                
+                #Indicates most likely start of a new sentence
+                if finite_count == 1 and tag in start_tags and (word, tag) not in sum_sub_coord_tags:
+                    new_new_sentences.append(holder_sentence)
+                    holder_sentence = ""
+                    finite_count = 0
+                    holder_sentence += f"{word} "
+                    continue
+                holder_sentence += f"{word} "
 
-    num_sentences = num_missed_sentences + (len(new_sentences) - num_sentences_offset)
+            new_new_sentences.append(holder_sentence)
+        else:
+            new_new_sentences.append(s)
 
+    num_sentences = len(new_new_sentences)
+
+    #Calculate score 
     if num_sentences <= 0:
         return 0
     elif num_sentences >= 22:
@@ -142,7 +164,7 @@ def main():
     #Simply here for testing
     # test = "Most people do not walk to work; instead, they drive or take the train. I love trains and I love brains and I love hating cars I am cool therefore you are cool too"
     test = "I want to do well I am sad i am happy. i am cool i am not cool he is dumb. After he and I finished my homework, I went to bed and also brushed my teeth."
-
+    # test = "After he and I finished my homework, I went to bed and also brushed my teeth."
     print(num_sentences(test))
 
     # getAverageSentCount()
