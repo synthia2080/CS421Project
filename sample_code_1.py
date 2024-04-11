@@ -90,15 +90,12 @@ def num_sentences(txt):
                 holder_sentence = ""
 
             holder_sentence += f"{word} "
-
         new_sentences.append(holder_sentence)
 
 
     notfiniteVerbTags = ['VB', 'VBG', 'VBN']
     sub_coord_tags = ['CC', 'IN', 'WP', 'WDT', 'WP$', 'RB'] #Tags usually indicating subordinate/coordinate clauses
     start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"]
-    num_missed_sentences = 0
-    num_sentences_offset = 0
 
 
     new_new_sentences = []
@@ -126,12 +123,12 @@ def num_sentences(txt):
             finite_count = 0
             holder_sentence = ""
 
-            #Go through tags to determine new sentence
+            #Go through tags to determine new sentence based on if a finite verb is read and whether the tag is part of possible EOS tag
             for (word, tag) in POS_tags:
                 if num_finite_verbs > 1 and (word, tag) in finite_verbs:
                     finite_count = 1
                 
-                #Indicates most likely start of a new sentence
+                #Indicates most likely start of a new sentence, excluding subordinate/coordinate tags to ensure those clauses remain together
                 if finite_count == 1 and tag in start_tags and (word, tag) not in sum_sub_coord_tags:
                     new_new_sentences.append(holder_sentence)
                     holder_sentence = ""
@@ -139,7 +136,6 @@ def num_sentences(txt):
                     holder_sentence += f"{word} "
                     continue
                 holder_sentence += f"{word} "
-
             new_new_sentences.append(holder_sentence)
         else:
             new_new_sentences.append(s)
