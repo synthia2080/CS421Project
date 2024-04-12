@@ -61,6 +61,7 @@ def num_sentences(txt):
 
     comma_list = [',', ';']
     not_EOS_pos_tags = ["DT","IN", "CC","DT", "PRP$", "WP$", "IN", "VB", "VBP", "VBZ", "VBD"] #Tags that shouldn't be at end of sentence
+    start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"]
     new_sentences = [] #holds all new sentences minus the last one
 
     # Checking for missed sentences based off of capitalization
@@ -70,7 +71,7 @@ def num_sentences(txt):
         tokenized_words = ["I" if word == "i" else word for word in tokenized_words] #Helps POS tagger appropriately label "I"
 
         POS_tags = nltk.pos_tag(tokenized_words)
-
+        print(POS_tags)
         #holds the new sentence
         holder_sentence = ""
 
@@ -158,9 +159,9 @@ def main():
 
     #Simply here for testing
     # test = "Most people do not walk to work; instead, they drive or take the train. I love trains and I love brains and I love hating cars I am cool therefore you are cool too"
-    test = "I want to do well I am sad i am happy. i am cool i am not cool he is dumb. After he and I finished my homework, I went to bed and also brushed my teeth."
+    # test = "I want to do well I am sad i am happy. i am cool i am not cool he is dumb. After he and I finished my homework, I went to bed and also brushed my teeth."
     # test = "After he and I finished my homework, I went to bed and also brushed my teeth."
-    print(num_sentences(test))
+    print(num_sentences("that"))
 
     # getAverageSentCount()
 
