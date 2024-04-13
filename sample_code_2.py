@@ -3,7 +3,7 @@ import nltk
 from nltk import word_tokenize
 import spacy
 
-def agreement():
+def agreement(tokenized_sentences):
     pass
 
 def verbMistakes(tokenized_sentences):

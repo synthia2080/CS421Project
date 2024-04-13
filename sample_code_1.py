@@ -170,7 +170,10 @@ def num_sentences(txt):
 
 
 def spelling_mistakes(txt):
-    pass
+    spelling = SpellChecker()
+    words_array = word_tokenize(txt)
+    commonly_mispelled_words = spelling.unknown(words)
+    return len(commonly_mispelled_words)
 
 def main():
 
@@ -184,7 +187,7 @@ def main():
     print(num_sentences(test))
 
     getAverageSentCount()
-
+    print(spelling_mistakes(test))
     #Holding here in case its needed for future use
     # "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 
