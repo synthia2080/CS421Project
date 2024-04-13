@@ -172,12 +172,12 @@ def num_sentences(txt):
 def spelling_mistakes(txt):
     spelling = SpellChecker()
     words_array = word_tokenize(txt)
-    commonly_mispelled_words = spelling.unknown(words)
+    commonly_mispelled_words = spelling.unknown(words_array)
+    print(commonly_mispelled_words)
     return len(commonly_mispelled_words)
 
 def main():
-
-    #Simply here for testing
+    # Simply here for testing
     test = "Most people do not walk to work; instead, they drive or take the train. I love trains and I love brains and I love hating cars I am cool therefore you are cool too. I want to do well I am sad i am happy. i am cool i am not cool he is dumb. After he and I finished my homework, I went to bed and also brushed my teeth."
     # test = "After he and I finished my homework, I went to bed and also brushed my teeth."
     # test = "I remember that I went to see the eclipse"
@@ -185,11 +185,12 @@ def main():
     # test = "i am not cool he is dumb learning is the best thing ever."
     # test = 'I remember that I went to see the eclipse'
     print(num_sentences(test))
-
+    test1 = "thiss is a tests sentence withhh spelling mistakes"
     getAverageSentCount()
-    print(spelling_mistakes(test))
-    #Holding here in case its needed for future use
+    print(spelling_mistakes(test1))
+    # Holding here in case its needed for future use
     # "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+
 
 
 if __name__ == "__main__":
