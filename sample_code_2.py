@@ -62,7 +62,7 @@ def verbMistakes(tokenized_sentences):
     print(num_mistakes)
 
 
-ddd = [('')]
-sentences = ['I remember that I went to see the eclipse']
+# ddd = [('')]
+# sentences = ['I remember that I went to see the eclipse']
 
-verbMistakes(sentences)
+# verbMistakes(sentences)
