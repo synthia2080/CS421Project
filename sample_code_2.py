@@ -21,29 +21,33 @@ def verbMistakes(tokenized_sentences):
         POS_tags = processor(s)
 
         verbs = [v for v in POS_tags if v.pos_ == "VERB"]
-        for token in verbs:
-            print(f"{token.text} {token.tag_} {token.dep_}")
+        for token in POS_tags:
+            print(f"{token.text} {token.tag_} {token.dep_} {token.children}")
 
         finite_verb_count = 0
         for i, token in enumerate(POS_tags):
             if i != 0:
                 prev_tag = POS_tags[i-1]
                 #Preceding gerund mistakes, missing auxilary
-                if i != 0 and token.tag_ == "VBG" and prev_tag.pos_ != "AUX" or prev_tag.tag_ != "IN":
+                if i != 0 and token.tag_ == "VBG" and (prev_tag.pos_ != "AUX" or prev_tag.tag_ != "IN"):
+                    print("gerund mistake")
                     num_mistakes += 1
 
 
             #Find finite verbs
-            if token.pos_ not in notfiniteVerbTags and token.pos_[0] == "V":
+            if token.tag_ not in notfiniteVerbTags and token.pos_ == "VERB":
                 all_finite_verbs.append(token.tag_)
                 finite_verb_count += 1
 
         
         #If theres no main verb, add to mistakes
         if finite_verb_count < 1:
+            print("No finite verbs mistake")
             num_mistakes += 1
         elif finite_verb_count > 1:
+            print("Multiple finite verbs mistake")
             num_mistakes += finite_verb_count
+        print(f"{finite_verb_count} | {verbs}")
         print()
 
     for i, v in enumerate(all_finite_verbs):
@@ -53,11 +57,12 @@ def verbMistakes(tokenized_sentences):
         
         #Check for verbs in consecutive sentences being different tense (not ideal solution for now)
         if (v in past and all_finite_verbs[i+1] in present) or (v in present and all_finite_verbs[i+1] in past):
+            print("Diff tense mistake")
             num_mistakes += 1
     print(num_mistakes)
 
 
 ddd = [('')]
-sentences = ['I remember that I go to see the eclipse', 'I remember that I went to see the eclipse']
+sentences = ['I remember that I went to see the eclipse']
 
 verbMistakes(sentences)

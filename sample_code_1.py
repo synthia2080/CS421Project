@@ -4,6 +4,7 @@ import pandas as pd
 from nltk import tokenize, word_tokenize
 from spellchecker import SpellChecker
 import os
+import spacy
 
 def getAverageSentCount():
     """
@@ -58,19 +59,20 @@ def num_sentences(txt):
     """
     #Get base number of sentences through sentence tokenizer
     tokenized_sentences = tokenize.sent_tokenize(txt)
-
+    processor = spacy.load("en_core_web_sm")
+            
     comma_list = [',', ';']
     not_EOS_pos_tags = ["DT","IN", "CC","DT", "PRP$", "WP$", "IN", "VB", "VBP", "VBZ", "VBD"] #Tags that shouldn't be at end of sentence
-    start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"]
+    start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"] #Possible tags at start of sentence
     new_sentences = [] #holds all new sentences minus the last one
 
-    # Checking for missed sentences based off of capitalization
+    # Checking for missed sentences based off of capitalization first
     for s in tokenized_sentences:
         #get POS tags for analyzing
         tokenized_words = word_tokenize(s)
         tokenized_words = ["I" if word == "i" else word for word in tokenized_words] #Helps POS tagger appropriately label "I"
-
         POS_tags = nltk.pos_tag(tokenized_words)
+
         #holds the new sentence
         holder_sentence = ""
 
@@ -95,47 +97,63 @@ def num_sentences(txt):
     notfiniteVerbTags = ['VB', 'VBG', 'VBN'] #Verb tags not included here are finite
     sub_coord_tags = ['CC', 'IN', 'WP', 'WDT', 'WP$', 'RB'] #Tags usually indicating subordinate/coordinate clauses
     start_tags = ["PRP", "DT", "WP", "IN", "RB", "NN", "NNP"] #Tags that usually are in beginning of sentences
+    not_end_pos = ['PART', 'DET' , 'AUX', 'INTJ', 'ADP', 'CONJ', 'CCONJ', 'SCONJ'] #.pos_ tags that shouldn't be at end of sentence
+    repeatable_conj = ['and', 'or', 'nor'] #conjucations that can be repeated multiple times in sentence
 
 
-    new_new_sentences = []
-    #Check for more missed sentences based on finite verbs
+    new_new_sentences = [] #Final list of sentences
     for s in new_sentences:
-        tokenized_words = word_tokenize(s)
-        tokenized_words = ["I" if word == "i" else word for word in tokenized_words] #Helps POS tagger appropriately label "I"
-        POS_tags = nltk.pos_tag(tokenized_words)
+        POS_tags = processor(s)
 
-        #Get index and tuple of finite verbs
-        finite_verbs = [value for index, value in enumerate(POS_tags) if value[1] not in notfiniteVerbTags and value[1][0] == "V"]
-        num_finite_verbs = len(finite_verbs)
+        finite_verbs = []
+        this_sub_coord_tags = []
 
-        #Sentence already proper
-        if num_finite_verbs <= 1:
+        #Get number of finite verbs and get each sub/coord clause tags 
+        for value in POS_tags:
+            if value.tag_ not in notfiniteVerbTags and value.tag_[0] == "V":
+                finite_verbs.append(value)
+            elif value.tag_ in sub_coord_tags:
+                this_sub_coord_tags.append(value)
+
+        # # For debugging
+        # for token in POS_tags:
+        #     print(f"{token.text} {token.tag_} {token.pos_} {token.dep_}")
+
+        #Sentences with less than 1 finite verbs should be complete
+        if len(finite_verbs) <= 1:
             new_new_sentences.append(s)
             continue
         
-        #Get number of tags relating to subordinate/coordinate clauses
-        sum_sub_coord_tags = [value for index, value in enumerate(POS_tags) if value[1] in sub_coord_tags]
-        num_sub_coords = len(sum_sub_coord_tags)
 
-        #More finite verbs than counted sub/coord clauses, should indicate a missed sentence
-        if num_sub_coords < num_finite_verbs:
-            finite_count = 0
+        #If There are more finite verbs than coord/sub clause indicating words, there must be a hidden sentence, otherwise sentence should be correct
+        if len(finite_verbs) > len(this_sub_coord_tags):
             holder_sentence = ""
+            temp_fin_count = 0
+            on_finite = False
+            for i, token in enumerate(POS_tags):
+                holder_sentence += f"{token.text} "
 
-            #Go through tags to determine new sentence based on if a finite verb is read and whether the tag is part of possible EOS tag
-            for (word, tag) in POS_tags:
-                if num_finite_verbs > 1 and (word, tag) in finite_verbs:
-                    finite_count = 1
+                #append sentence if there is subordinate/coordinate clause
+                if token.dep_ == "mark":
+                    new_new_sentences.append(s)
+                    holder_sentence = ""
+                    break
+    
+                #Check if current word is finite verb
+                if token.tag_ not in notfiniteVerbTags and token.tag_[0] == "V":
+                    temp_fin_count += 1
+                    on_finite = True
                 
-                #Indicates most likely start of a new sentence, excluding subordinate/coordinate tags to ensure those clauses remain together
-                if finite_count == 1 and tag in start_tags and (word, tag) not in sum_sub_coord_tags:
+                #If we are past a finite verb, check if end of sentence is possible (whether word is able to be at the end)
+                if i != len(POS_tags)-1 and on_finite == True and temp_fin_count < len(finite_verbs) and POS_tags[i+1].tag_ in start_tags and POS_tags[i+1].pos_ not in not_end_pos and POS_tags[i+1].tag_ not in this_sub_coord_tags and token.text.lower() not in repeatable_conj:
                     new_new_sentences.append(holder_sentence)
                     holder_sentence = ""
-                    finite_count = 0
-                    holder_sentence += f"{word} "
+                    on_finite = False
                     continue
-                holder_sentence += f"{word} "
-            new_new_sentences.append(holder_sentence)
+
+            #Append remaining sentence in string
+            if holder_sentence != "":
+                new_new_sentences.append(holder_sentence)
         else:
             new_new_sentences.append(s)
 
@@ -157,12 +175,15 @@ def spelling_mistakes(txt):
 def main():
 
     #Simply here for testing
-    # test = "Most people do not walk to work; instead, they drive or take the train. I love trains and I love brains and I love hating cars I am cool therefore you are cool too"
-    # test = "I want to do well I am sad i am happy. i am cool i am not cool he is dumb. After he and I finished my homework, I went to bed and also brushed my teeth."
+    test = "Most people do not walk to work; instead, they drive or take the train. I love trains and I love brains and I love hating cars I am cool therefore you are cool too. I want to do well I am sad i am happy. i am cool i am not cool he is dumb. After he and I finished my homework, I went to bed and also brushed my teeth."
     # test = "After he and I finished my homework, I went to bed and also brushed my teeth."
-    print(num_sentences("that"))
+    # test = "I remember that I went to see the eclipse"
+    # test = "I want to do well I am sad i am happy."
+    # test = "i am not cool he is dumb learning is the best thing ever."
+    # test = 'I remember that I went to see the eclipse'
+    print(num_sentences(test))
 
-    # getAverageSentCount()
+    getAverageSentCount()
 
     #Holding here in case its needed for future use
     # "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
