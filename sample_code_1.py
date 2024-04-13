@@ -71,7 +71,6 @@ def num_sentences(txt):
         tokenized_words = ["I" if word == "i" else word for word in tokenized_words] #Helps POS tagger appropriately label "I"
 
         POS_tags = nltk.pos_tag(tokenized_words)
-        print(POS_tags)
         #holds the new sentence
         holder_sentence = ""
 
