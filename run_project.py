@@ -41,7 +41,12 @@ def main():
         # b_score = spelling_mistakes()
         # ci_score = agreement()
 
-        # cii_score = verbMistakes(new_sentences)
+        cii_score = verbMistakes(new_sentences)
+
+        print(f"{filename}:")
+        print(f"    a-score: {a_score}")
+        print(f"    cii-score: {cii_score}")
+        print()
 
 if __name__ == "__main__":
     main()
