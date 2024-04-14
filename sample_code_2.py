@@ -61,8 +61,8 @@ def agreement(tokenized_sentences):
                 errors += 1
     
     normalized_agreement_changes = float(errors) / len(tokenized_sentences) * 100
-    high_threshold = 2
-    low_threshold = 8
+    high_threshold = 13
+    low_threshold = 19
     if normalized_agreement_changes < high_threshold:
         return 5
     elif normalized_agreement_changes > low_threshold:

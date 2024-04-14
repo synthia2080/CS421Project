@@ -1,5 +1,6 @@
 # CS421Project 
 Synthia Sasulski - lsasu2
+Sravani Bhamidipaty - sbham3
 
 [link to github](https://github.com/synthia2080/CS421Project.git)
 
