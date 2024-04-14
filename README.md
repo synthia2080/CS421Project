@@ -1,5 +1,7 @@
-# CS421Project
+# CS421Project 
 Synthia Sasulski - lsasu2
+
+[link to github](https://github.com/synthia2080/CS421Project.git)
 
 ## How to Run
 You can either run a single essay or a path to a folder of essays
