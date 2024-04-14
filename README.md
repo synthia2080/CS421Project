@@ -37,7 +37,7 @@ The scoring was calculated through simply getting the average number of sentence
 There are 3 steps to look for spelling mistakes.
 1. We utilize a spell checking library: pyspellchecker
 2. Then we take the input text and then tokenize the text into individual words using word_tokenize function which is imported from the nltk library.
-3. We utilize unknown function from the SpellChecker library to see if there are any spelling mistakes in the words array created from the previous step. Finally, we return the length of the potentially misspelled words in the given text.
+3. We utilize unknown function from the SpellChecker library to see if there are any spelling mistakes in the words array created from the previous step.
 
 ### ci-score (agreement(), sample_code_2.py)
 There are a few checks to look for subject-verb agreement.

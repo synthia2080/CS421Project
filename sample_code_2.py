@@ -43,11 +43,9 @@ def agreement(tokenized_sentences):
                     if personal_pronoun in ["he", "she", "it"]:
                         if token.tag_ == "VBP":
                             errors += 1
-                            print("Error:", sentence.strip())
                     elif personal_pronoun in ["i", "you", "we", "they"]:
                         if token.tag_ == "VBZ":
                             errors += 1
-                            print("Error:", sentence.strip())
                 
                 if token.pos_ == "VERB" and token.lemma_.lower() in auxiliary_verbs:
                     if token.tag_ in "VBZ":
@@ -55,17 +53,22 @@ def agreement(tokenized_sentences):
                     if personal_pronoun in ["he", "she", "it"]:
                         if token.tag_ == "VBP":
                             errors += 1
-                            print("Error:", sentence.strip())
                     elif personal_pronoun in ["i", "you", "we", "they"]:
                         if token.tag_ == "VBZ":
                             errors += 1
-                            print("Error:", sentence.strip())
 
             if not has_subject:
                 errors += 1
-                print("Error:", sentence.strip())
     
-    return errors
+    normalized_agreement_changes = float(errors) / tokenized_sentences * 100
+    high_threshold = 159
+    low_threshold = 349
+    if normalized_agreement_changes < high_threshold:
+        return 5
+    elif normalized_mistakes > low_threshold:
+        return 1
+    else:
+        return 1 + 4 * (normalized_mistakes - high_threshold) / (low_threshold - high_threshold)
 
 def verbMistakes(tokenized_sentences):
     numSentences = len(tokenized_sentences)

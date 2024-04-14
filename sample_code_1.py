@@ -170,26 +170,24 @@ def num_sentences(txt):
 
 
 def spelling_mistakes(txt):
+    """
+    Analyzes the spelling quality of a given text and assigns a score based on the severity of spelling mistakes.
+    """
+
     spelling = SpellChecker()
     words_array = word_tokenize(txt)
     commonly_mispelled_words = spelling.unknown(words_array)
-    print(commonly_mispelled_words)
-    return len(commonly_mispelled_words)
+    
+    normalized_spelling_mistakes = len(commonly_mispelled_words) / len(words_array) * 100
 
-def main():
-    # Simply here for testing
-    test = "Most people do not walk to work; instead, they drive or take the train. I love trains and I love brains and I love hating cars I am cool therefore you are cool too. I want to do well I am sad i am happy. i am cool i am not cool he is dumb. After he and I finished my homework, I went to bed and also brushed my teeth."
-    # test = "After he and I finished my homework, I went to bed and also brushed my teeth."
-    # test = "I remember that I went to see the eclipse"
-    # test = "I want to do well I am sad i am happy."
-    # test = "i am not cool he is dumb learning is the best thing ever."
-    # test = 'I remember that I went to see the eclipse'
-    print(num_sentences(test))
-    test1 = "thiss is a tests sentence withhh spelling mistakes"
-    getAverageSentCount()
-    print(spelling_mistakes(test1))
-    # Holding here in case its needed for future use
-    # "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+    high_threshold = 8
+    low_threshold = 14
+    if normalized_spelling_mistakes < high_threshold:
+        return 5
+    elif normalized_spelling_mistakes > low_threshold:
+        return 1
+    else:
+        return 1 + 4 * (normalized_spelling_mistakes - high_threshold) / (low_threshold - high_threshold)
 
 
 
