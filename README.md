@@ -25,7 +25,7 @@ if the word is capitlaized. If the word is, and its not a proper noun or part of
 The scoring was calculated through simply getting the average number of sentences for high/low essays and using interpolation to get a score from 0-5 based on the manually found averages.
 
 ### b-score (spelling mistakes)
-There are three to look for spelling mistakes.
+There are 3 steps to look for spelling mistakes.
 1. We utilize a spell checking library: pyspellchecker
 2. Then we take each line and then tokenize the line into individual words using word_tokenize function which is imported from the nltk library.
 3. We utilize unknown function from the SpellChecker library to see if there are any spelling mistakes in the words array created from the previous step. Finally, we return the length of the potentially misspelled words in the given text.
