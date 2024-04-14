@@ -27,11 +27,12 @@ The scoring was calculated through simply getting the average number of sentence
 ### b-score (spelling mistakes)
 There are 3 steps to look for spelling mistakes.
 1. We utilize a spell checking library: pyspellchecker
-2. Then we take each line and then tokenize the line into individual words using word_tokenize function which is imported from the nltk library.
+2. Then we take the input text and then tokenize the text into individual words using word_tokenize function which is imported from the nltk library.
 3. We utilize unknown function from the SpellChecker library to see if there are any spelling mistakes in the words array created from the previous step. Finally, we return the length of the potentially misspelled words in the given text.
 
 ### ci-score (verb agreement)
-explanation...
+There are a few checks to look for subject-verb agreement.
+After passing in the newly tokenized sentences from num_sentences(), we check through the POS tags again. First, we iterate through each tokenized sentence to identify the subject using POS tags to determine whether the subject is singular of plural. Then for each sentence, we consider two major verb groups: is the verb auxiliary or not. If the verb is not auxiliary: it is not in the auxiliary verbs list (we have only considered the verb has for this project, but we can add other common ones), then we ensure that its form matches the subject. There are two cases, for singular subjects ("he", "she", "it"), the verb should not be in plural form. For singular subjects ("I", "you") and plural subjects ("we", "they"), the verb should not be in singular form. This is determined using POS tags for verbs. If there is an error, the error counter increments by 1, and finally the function returns the total number of errors.
 
 ### cii-score (verb mistakes)
 There are a few checks to look for verb mistakes.
