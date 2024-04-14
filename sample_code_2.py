@@ -8,7 +8,56 @@ from sample_code_1 import num_sentences
 import math
 
 def agreement(tokenized_sentences):
-    pass
+    nlp = spacy.load("en_core_web_sm")
+    errors = 0
+    auxiliary_verbs = ["has"]
+
+    for sentence in tokenized_sentences:
+        if sentence.strip():
+            text = nlp(sentence.strip())
+            
+            has_subject = False
+            singular_subject = False
+            plural_subject = False
+            singular_verb = False
+            plural_verb = False
+            personal_pronoun = ""
+
+            for token in text:
+                if token.dep_ == "nsubj":
+                    has_subject = True
+                    if token.tag_ in ["NN", "NNP"]:
+                        singular_subject = True
+                    elif token.tag_ in ["NNS", "NNPS"]:
+                        plural_subject = True
+                    elif token.tag_ == "PRP$":
+                        personal_pronoun = "possessive"
+                    elif token.tag_ == "PRP":
+                        personal_pronoun = token.text.lower()
+
+                if token.pos_ == "VERB" and token.lemma_.lower() not in auxiliary_verbs:
+                    if token.tag_ in ["VBZ", "VBD"]:
+                        singular_verb = True
+                    if token.tag_ == "VBP":
+                        plural_verb = True
+                    if personal_pronoun in ["he", "she", "it"]:
+                        if token.tag_ == "VBP":
+                            errors += 1
+                            print("Error:", sentence.strip(), "- Incorrect verb form 'VBP' with singular subject.")
+                    elif personal_pronoun in ["i", "you", "we", "they"]:
+                        if token.tag_ == "VBZ":
+                            errors += 1
+                            print("Error:", sentence.strip(), "- Incorrect verb form 'VBZ' with plural subject.")
+
+            if not has_subject:
+                errors += 1
+                print("Error:", sentence.strip(), "- No subject found.")
+    
+    return errors
+
+essay = ["He runs.", "I run.", "you have.", "you want."]
+num_errors = agreement(essay)
+print("Number of errors found:", num_errors)
 
 def verbMistakes(tokenized_sentences):
     numSentences = len(tokenized_sentences)
