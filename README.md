@@ -25,14 +25,17 @@ if the word is capitlaized. If the word is, and its not a proper noun or part of
 The scoring was calculated through simply getting the average number of sentences for high/low essays and using interpolation to get a score from 0-5 based on the manually found averages.
 
 ### b-score (spelling mistakes)
-explanation...
+There are three to look for spelling mistakes.
+1. We utilize a spell checking library: pyspellchecker
+2. Then we take each line and then tokenize the line into individual words using word_tokenize function which is imported from the nltk library.
+3. We utilize unknown function from the SpellChecker library to see if there are any spelling mistakes in the words array created from the previous step. Finally, we return the length of the potentially misspelled words in the given text.
 
 ### ci-score (verb agreement)
 explanation...
 
 ### cii-score (verb mistakes)
 There are a few checks to look for verb mistakes.
-Afte passing in the newly tokenized sentences from num_sentences(), we check through the POS tags again. First, we check for a correct verb tense following infinitive. Then we check for missing auxilary verbs through looking at the word's children's dependency. After all that, and counting the number of finite verbs, we check to see if theres only 1 finite verb (from the previous missing verb checks we also checked for the root verb). Once these checks are done, we check for discrepencies between root verb tenses in consecutive sentences.
+After passing in the newly tokenized sentences from num_sentences(), we check through the POS tags again. First, we check for a correct verb tense following infinitive. Then we check for missing auxilary verbs through looking at the word's children's dependency. After all that, and counting the number of finite verbs, we check to see if theres only 1 finite verb (from the previous missing verb checks we also checked for the root verb). Once these checks are done, we check for discrepencies between root verb tenses in consecutive sentences.
 
 The scoring was done similarly to the scoring in num_sentences(), however, the number of mistakes was also normalized for the number of sentences so that higher scoring essays don't get penalized as much.
 
