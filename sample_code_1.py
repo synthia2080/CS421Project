@@ -172,6 +172,9 @@ def num_sentences(txt):
 def spelling_mistakes(txt):
     """
     Analyzes the spelling quality of a given text and assigns a score based on the severity of spelling mistakes.
+
+    txt: essay as a string
+    returns: score as an int
     """
 
     spelling = SpellChecker()
@@ -188,8 +191,3 @@ def spelling_mistakes(txt):
         return 1
     else:
         return 1 + 4 * (normalized_spelling_mistakes - high_threshold) / (low_threshold - high_threshold)
-
-
-
-if __name__ == "__main__":
-    main()

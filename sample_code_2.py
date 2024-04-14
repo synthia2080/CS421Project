@@ -60,15 +60,15 @@ def agreement(tokenized_sentences):
             if not has_subject:
                 errors += 1
     
-    normalized_agreement_changes = float(errors) / tokenized_sentences * 100
-    high_threshold = 159
-    low_threshold = 349
+    normalized_agreement_changes = float(errors) / len(tokenized_sentences) * 100
+    high_threshold = 2
+    low_threshold = 8
     if normalized_agreement_changes < high_threshold:
         return 5
-    elif normalized_mistakes > low_threshold:
+    elif normalized_agreement_changes > low_threshold:
         return 1
     else:
-        return 1 + 4 * (normalized_mistakes - high_threshold) / (low_threshold - high_threshold)
+        return 1 + 4 * (normalized_agreement_changes - high_threshold) / (low_threshold - high_threshold)
 
 def verbMistakes(tokenized_sentences):
     numSentences = len(tokenized_sentences)
