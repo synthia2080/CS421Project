@@ -10,7 +10,7 @@ import math
 def agreement(tokenized_sentences):
     nlp = spacy.load("en_core_web_sm")
     errors = 0
-    auxiliary_verbs = ["has"]
+    auxiliary_verbs = ["has", "do"]
 
     for sentence in tokenized_sentences:
         if sentence.strip():
@@ -43,21 +43,29 @@ def agreement(tokenized_sentences):
                     if personal_pronoun in ["he", "she", "it"]:
                         if token.tag_ == "VBP":
                             errors += 1
-                            print("Error:", sentence.strip(), "- Incorrect verb form 'VBP' with singular subject.")
+                            print("Error:", sentence.strip())
                     elif personal_pronoun in ["i", "you", "we", "they"]:
                         if token.tag_ == "VBZ":
                             errors += 1
-                            print("Error:", sentence.strip(), "- Incorrect verb form 'VBZ' with plural subject.")
+                            print("Error:", sentence.strip())
+                
+                if token.pos_ == "VERB" and token.lemma_.lower() in auxiliary_verbs:
+                    if token.tag_ in "VBZ":
+                        singular_verb = True
+                    if personal_pronoun in ["he", "she", "it"]:
+                        if token.tag_ == "VBP":
+                            errors += 1
+                            print("Error:", sentence.strip())
+                    elif personal_pronoun in ["i", "you", "we", "they"]:
+                        if token.tag_ == "VBZ":
+                            errors += 1
+                            print("Error:", sentence.strip())
 
             if not has_subject:
                 errors += 1
-                print("Error:", sentence.strip(), "- No subject found.")
+                print("Error:", sentence.strip())
     
     return errors
-
-essay = ["He runs.", "I run.", "you have.", "you want."]
-num_errors = agreement(essay)
-print("Number of errors found:", num_errors)
 
 def verbMistakes(tokenized_sentences):
     numSentences = len(tokenized_sentences)
