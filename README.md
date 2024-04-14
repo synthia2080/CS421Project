@@ -1,7 +1,7 @@
 # CS421Project 
-Teammate 1 NAME: Synthia Sasulski netid: lsasu2
+Teammate 1: Synthia Sasulski netid: lsasu2
 
-Teammate 2 NAME: Sravani Bhamidipaty netid: sbham3
+Teammate 2: Sravani Bhamidipaty netid: sbham3
 
 [link to github](https://github.com/synthia2080/CS421Project.git)
 
