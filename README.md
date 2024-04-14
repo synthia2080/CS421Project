@@ -1,6 +1,6 @@
 # CS421Project 
-Synthia Sasulski - lsasu2
-Sravani Bhamidipaty - sbham3
+Teammate 1 NAME: Synthia Sasulski netid: lsasu2
+Teammate 2 NAME: Sravani Bhamidipaty netid: sbham3
 
 [link to github](https://github.com/synthia2080/CS421Project.git)
 
@@ -24,6 +24,7 @@ python run_project.py --folder_path "path to folder"
 - pandas
 - argparse
 - os
+- Spellchecker
 
 ## Functions/Explanations for scoring
 
@@ -50,6 +51,4 @@ After passing in the newly tokenized sentences from num_sentences(), we check th
 There are a few checks to look for verb mistakes.
 After passing in the newly tokenized sentences from num_sentences(), we check through the POS tags again. First, we check for a correct verb tense following infinitive. Then we check for missing auxilary verbs through looking at the word's children's dependency. After all that, and counting the number of finite verbs, we check to see if theres only 1 finite verb (from the previous missing verb checks we also checked for the root verb). Once these checks are done, we check for discrepencies between root verb tenses in consecutive sentences.
 
-The scoring was done similarly to the scoring in num_sentences(), however, the number of mistakes as well as the number of verb tense changes between sentences are normalized. This is to account for longer essays possibly having more mistakes simply because theres more room for error. Normalizing the verb tense changes also helps account for correct tense changes between sentences, which was proven difficult to determine reliably. 
-
-
+The scoring was done similarly to the scoring in num_sentences(), however, the number of mistakes as well as the number of verb tense changes between sentences are normalized. This is to account for longer essays possibly having more mistakes simply because theres more room for error. Normalizing the verb tense changes also helps account for correct tense changes between sentences, which was proven difficult to determine reliably.
