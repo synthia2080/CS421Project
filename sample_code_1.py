@@ -188,6 +188,6 @@ def spelling_mistakes(txt):
     if normalized_spelling_mistakes < high_threshold:
         return 4
     elif normalized_spelling_mistakes > low_threshold:
-        return 1
+        return 0
     else:
         return 1 + 3 * (normalized_spelling_mistakes - high_threshold) / (low_threshold - high_threshold)
