@@ -38,13 +38,15 @@ def main():
     for (filename, essay) in essays:
         a_score, new_sentences = num_sentences(essay)
 
-        # b_score = spelling_mistakes()
-        # ci_score = agreement()
+        b_score = spelling_mistakes(essay)
+        ci_score = agreement(new_sentences)
 
         cii_score = verbMistakes(new_sentences)
 
         print(f"{filename}:")
         print(f"    a-score: {a_score}")
+        print(f"    b-score: {b_score}")
+        print(f"    ci-score: {ci_score}")
         print(f"    cii-score: {cii_score}")
         print()
 
