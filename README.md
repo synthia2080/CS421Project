@@ -14,7 +14,15 @@ python run_project.py --folder_path "path to folder"
 
 <br>
 
-## Explanation/Process for scoring
+## Packages Used
+- Numpy
+- nltk
+- SpaCY
+- pandas
+- argparse
+- os
+
+## Functions/Explanations for scoring
 
 ### a-score (num_sentences(), sample_code_1.py)
 There were 3 steps in determining where sentences start/end.
