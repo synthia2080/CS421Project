@@ -111,25 +111,33 @@ def verbMistakes(tokenized_sentences):
 
 
     #Check for different tenses (through root verbs) in consecutive sentences being different tense (not ideal but best solution for now)
+    num_verb_changes = 0
     for i, v in enumerate(all_root_verbs):
         #Skip last verb
         if i == len(all_root_verbs) - 1:
             continue
         
         if v in past and all_root_verbs[i+1] not in past:
-            num_mistakes += 1
+            num_verb_changes += 1
         elif v in present and all_root_verbs[i+1] not in present:
-            num_mistakes += 1
+            num_verb_changes += 1
         elif v == "MD" and all_root_verbs[i+1] != "MD" and all_root_verbs[i+1] != 'VB':
-            num_mistakes += 1
+            num_verb_changes += 1
 
+
+    #Normalize verb changes to account for natural, correct changes in tenses between sentences
+    normalized_verb_changes = float(num_verb_changes) / numSentences * 100
+    num_mistakes += normalized_verb_changes
+
+    #Normalize number of mistakes based on sentence count
     normalized_mistakes = (float(num_mistakes) / numSentences)*100
 
     #Return based on average number of mistakes for essays
-    if normalized_mistakes < 47:
+    high_threshold = 159
+    low_threshold = 349
+    if normalized_mistakes < high_threshold:
         return 5
-    elif normalized_mistakes > 57:
+    elif normalized_mistakes > low_threshold:
         return 1
     else:
-        return 1 + 4 * (normalized_mistakes - 47) / (57 - 47)
-
+        return 1 + 4 * (normalized_mistakes - high_threshold) / (low_threshold - high_threshold)
