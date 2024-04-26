@@ -5,6 +5,15 @@ import nltk
 import os
 import pandas as pd
 from sample_code_1 import num_sentences
+import gensim.downloader as api
+import spacy
+
+spacy_processor = spacy.load("en_core_web_sm")
+# # Load the medium model with word vectors
+# SPACY_WORD2VEC = spacy.load('en_core_web_md')
+
+# # Load Google's pre-trained Word2Vec model.
+# GENSIM_WORD2VEC = api.load('word2vec-google-news-300')
 
 EMBEDDING_FILE = "w2v.pkl"
 
@@ -33,41 +42,40 @@ def getAverageSentCount():
     low_sentence_totalCosineSim = 0
     high_sentence_num = 0
     high_sentence_totalCosineSim= 0
-    maxSampledEssays = 5
+    maxSampledEssays = 10
     essays_used = []
     #Get average for correct prompt essays
     print("Calculating average cosine for correct prompt...")
     for name, essay in essays:
         df = index[index['filename'] == name]
         prompt = df['prompt'].iloc[0]
-        if prompt != sampled_prompts[0]:
-            continue
         score = df['grade'].iloc[0]
         
-        #Check if we already read up to max number of sample for either high or low essays
-        if score == "high" and high_sentence_num >= maxSampledEssays:
-            continue
-        elif score == "low" and low_sentence_num >= maxSampledEssays:
-            continue
+        # #Check if we already read up to max number of sample for either high or low essays
+        # if score == "high" and high_sentence_num >= maxSampledEssays:
+        #     continue
+        # elif score == "low" and low_sentence_num >= maxSampledEssays:
+        #     continue
         
         # print(f" ****{name}")
         _, tokenized_sentences = num_sentences(essay)
-        promp_essay_cosineSim = semanticsPragmatics(sampled_prompts[0], tokenized_sentences)
+        promp_essay_cosineSim, dii = semanticsPragmatics(sampled_prompts[0], tokenized_sentences)
+        # print(f"{score} : {dii}")
         
         if score == "high":
             high_sentence_num += 1
-            high_sentence_totalCosineSim += promp_essay_cosineSim
+            high_sentence_totalCosineSim += dii
         else:
             low_sentence_num += 1
-            low_sentence_totalCosineSim += promp_essay_cosineSim
+            low_sentence_totalCosineSim += dii
 
-        essays_used.append((name, score, essay))
+        # essays_used.append((name, score, essay))
 
-        #Exit if we read up to max for both high and low essays
-        if high_sentence_num >= maxSampledEssays and low_sentence_num >= maxSampledEssays:
-            break
+        # #Exit if we read up to max for both high and low essays
+        # if high_sentence_num >= maxSampledEssays and low_sentence_num >= maxSampledEssays:
+        #     break
 
-        print(f"numHighEssays: {high_sentence_num}, numLowEssays: {low_sentence_num}, {name}, {score}")
+        # print(f"numHighEssays: {high_sentence_num}, numLowEssays: {low_sentence_num}, {name}, {score}")
 
     print()
     #compute averages
@@ -79,39 +87,41 @@ def getAverageSentCount():
     print()
 
     #Get averages for incorrect prompt-essay combo
-    low_sentence_num = 0
-    low_sentence_totalCosineSim = 0
-    high_sentence_num = 0
-    high_sentence_totalCosineSim= 0
-    maxSampledEssays = 5
-    #Get average for correct prompt essays
-    print("Calculating average cosine for incorrect prompt...")
-    for name, score, essay in essays_used:
-        #Check if we already read up to max number of sample for either high or low essays
-        if score == "high" and high_sentence_num >= maxSampledEssays:
-            continue
-        elif score == "low" and low_sentence_num >= maxSampledEssays:
-            continue
+    # low_sentence_num = 0
+    # low_sentence_totalCosineSim = 0
+    # high_sentence_num = 0
+    # high_sentence_totalCosineSim= 0
+    # maxSampledEssays = 10
+    # #Get average for correct prompt essays
+    # print("Calculating average cosine for incorrect prompt...")
+    # for name, score, essay in essays_used:
+    #     #Check if we already read up to max number of sample for either high or low essays
+    #     if score == "high" and high_sentence_num >= maxSampledEssays:
+    #         continue
+    #     elif score == "low" and low_sentence_num >= maxSampledEssays:
+    #         continue
 
-        _, tokenized_sentences = num_sentences(essay)
-        promp_essay_cosineSim = semanticsPragmatics(sampled_prompts[1], tokenized_sentences)
+    #     _, tokenized_sentences = num_sentences(essay)
+    #     promp_essay_cosineSim = semanticsPragmatics(sampled_prompts[1], tokenized_sentences)
 
-        if score == "high":
-            high_sentence_num += 1
-            high_sentence_totalCosineSim += promp_essay_cosineSim
-        else:
-            low_sentence_num += 1
-            low_sentence_totalCosineSim += promp_essay_cosineSim
-        #Exit if we read up to max for both high and low essays
-        if high_sentence_num >= maxSampledEssays and low_sentence_num >= maxSampledEssays:
-            break
-        print(f"numHighEssays: {high_sentence_num}, numLowEssays: {low_sentence_num}, {name}, {score}")
+    #     if score == "high":
+    #         high_sentence_num += 1
+    #         high_sentence_totalCosineSim += promp_essay_cosineSim
+    #     else:
+    #         low_sentence_num += 1
+    #         low_sentence_totalCosineSim += promp_essay_cosineSim
+    #     #Exit if we read up to max for both high and low essays
+    #     if high_sentence_num >= maxSampledEssays and low_sentence_num >= maxSampledEssays:
+    #         break
+    #     print(f"numHighEssays: {high_sentence_num}, numLowEssays: {low_sentence_num}, {name}, {score}")
 
-    incorrectPrompt_high_average = high_sentence_totalCosineSim / high_sentence_num
-    incorrectPrompt_low_average = low_sentence_totalCosineSim / low_sentence_num
+    # incorrectPrompt_high_average = high_sentence_totalCosineSim / high_sentence_num
+    # incorrectPrompt_low_average = low_sentence_totalCosineSim / low_sentence_num
 
-    print(f"Average cosine similarity for incorrect prompt in 'high' grades: {incorrectPrompt_high_average}")
-    print(f"Average cosine similarity for incorrect prompt in 'low' grades: {incorrectPrompt_low_average}")
+    # print(f"Average cosine similarity for incorrect prompt in 'high' grades: {incorrectPrompt_high_average}")
+    # print(f"Average cosine similarity for incorrect prompt in 'low' grades: {incorrectPrompt_low_average}")
+
+
 
 def load_w2v(filepath):
     """
@@ -161,14 +171,15 @@ def string2vec(word2vec, user_input):
     #Tokenize words
     tokenized_words = word_tokenize(user_input)  
     POS_tags = nltk.pos_tag(tokenized_words)
+    spacy_tags = spacy_processor(user_input)
 
     content_tags = ['NN', 'NNP', 'NNS', 'NNPS', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'JJ', 'JJR', 'JJS', 'RB', 'RBR', 'RBS']
     #might need to check POS tags for content words
     #Get embeddings for each token
     word2vecArray = []
-    for token, tag in POS_tags:
-        if tag in content_tags and token in word2vec:
-            word2vecArray.append(word2vec[token])
+    for token in spacy_tags:
+        if token.tag_ in content_tags and not token.is_punct and not token.is_stop and token.text in word2vec:
+            word2vecArray.append(word2vec[token.text])
 
     #Get the averages
     word2vecArray = np.array(word2vecArray)
@@ -176,7 +187,6 @@ def string2vec(word2vec, user_input):
         return np.zeros(300,)
 
     averageArray = word2vecArray.mean(axis=0)
-
 
     return averageArray
 
@@ -189,6 +199,7 @@ def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
         Returns: sim (float)
         Where, sim (float) is the cosine similarity between vectors a and b. x is the size of the numpy vector. Assume that both vectors are of the same size.
     """
+
     aDOTb = np.dot(a,b)
 
     aMag = np.linalg.norm(a)
@@ -219,12 +230,55 @@ def semanticsPragmatics(prompt, tokenized_sentences):
     for s in essay_sentenceEmbeddings:
         prompt_essay_embeddingSum += cosine_similarity(prompt_avgEmbedding, s)
 
-    prompt_essay_embeddingAvg = prompt_essay_embeddingSum / float(len(essay_sentenceEmbeddings))
+    prompt_essay_embeddingAvg = (prompt_essay_embeddingSum / float(len(essay_sentenceEmbeddings))) * -100
+    di_score = 0
 
-    return prompt_essay_embeddingAvg
+    # return prompt_essay_embeddingAvg
+    correctPromptHighThreshold = -22.5
+    correctPromptLowThreshold = -23
+    incorrectPromptHighThreshold = -37.2
+    incorrectPromptLowThreshold = -38.8
 
+    if prompt_essay_embeddingAvg >= correctPromptHighThreshold:
+        di_score = 5  
+    elif correctPromptLowThreshold <= prompt_essay_embeddingAvg < correctPromptHighThreshold:
+        di_score = 4
+    elif incorrectPromptHighThreshold <= prompt_essay_embeddingAvg:
+        di_score = 3
+    elif incorrectPromptLowThreshold <= prompt_essay_embeddingAvg < incorrectPromptHighThreshold:
+        di_score = 2
+    else:
+        di_score = 1
 
     # ***** subscore d.ii *****
+    dii_score = 0
+    # essayEmbeddingsAvg = np.array(essay_sentenceEmbeddings).mean(axis=1)
+    cos_all = []
+    for i, cs in enumerate(essay_sentenceEmbeddings):
+        if i == len(essay_sentenceEmbeddings)-1:
+            break
+
+        s1 = cs
+        s2 = essay_sentenceEmbeddings[i+1]
+
+        cosine_sim = cosine_similarity(s1, s2)
+        cos_all.append(cosine_sim)
+
+    cos_all = np.array(cos_all)
+    sde = np.std(cos_all)
+    # print(f"SDE: {sde}")
+    sde = sde * 1000
+
+    high_threshold = 145
+    low_threshold = 146
+    if sde <= high_threshold:
+        dii_score = 1
+    elif sde >= low_threshold:
+        dii_score = 5
+    else:
+        dii_score = 1 + 4 * (sde - high_threshold) / (low_threshold - high_threshold)
+
+    return di_score, dii_score
 
 
 
@@ -241,13 +295,17 @@ getAverageSentCount()
 # essay_path = "1079196.txt"
 
 # prompt = "Do you agree or disagree with the following statement?		Most advertisements make products seem much better than they really are.		Use specific reasons and examples to support your answer.	"
+# # # prompt = "Do you agree or disagree with the following statement?		Successful people try new things and take risks rather than only doing what they already know how to do well.		Use reasons and examples to support your answer.	"
 # essay_path = "1449555.txt"
 
-# essay = ""
+# # essay = ""
+
 # with open(essay_path, 'r') as file:
 #     essay = file.read()
 
 # _, tokenized_sents = num_sentences(essay)
 # prompt_essay_embeddingAvg = semanticsPragmatics(prompt, tokenized_sents)
+
+# # prompt_essay_embeddingAvg = semanticsPragmatics("Testing? Test Prompt. Testing", ["Hello world", "I like the test prompt"])
 
 # print(prompt_essay_embeddingAvg)
