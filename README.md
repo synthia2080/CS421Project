@@ -40,9 +40,9 @@ This assumes a folder hierarchy of:
 - nltk
 - SpaCY
 - pandas
-- argparse
 - os
 - Spellchecker
+- pickle
 
 ## Functions/Explanations for scoring
 
