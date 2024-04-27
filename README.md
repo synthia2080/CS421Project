@@ -44,9 +44,13 @@ There are 3 steps to look for spelling mistakes.
 2. Then we take the input text and then tokenize the text into individual words using word_tokenize function which is imported from the nltk library.
 3. We utilize unknown function from the SpellChecker library to see if there are any spelling mistakes in the words array created from the previous step.
 
+The scoring was calculated through simply getting the average number of misspelled words for high/low essays and using interpolation to get a score from 0-5 based on the manually found averages.
+
 ### ci-score (agreement(), sample_code_2.py)
 There are a few checks to look for subject-verb agreement.
 After passing in the newly tokenized sentences from num_sentences(), we check through the POS tags again. First, we iterate through each tokenized sentence to identify the subject using POS tags to determine whether the subject is singular of plural. Then for each sentence, we consider two major verb groups: is the verb auxiliary or not. If the verb is not auxiliary: it is not in the auxiliary verbs list (we have only considered the verb has and do since this are the most common ones, but we can add other common ones), then we ensure that its form matches the subject. There are two cases, for singular subjects ("he", "she", "it"), the verb should not be in plural form. For singular subjects ("I", "you") and plural subjects ("we", "they"), the verb should not be in singular form. This is determined using POS tags for verbs. If there is an error, the error counter increments by 1.
+
+The scoring for the agreement function is determined by comparing the frequency of grammatical errors related to subject-verb agreement and tense consistency within the provided tokenized sentences and using interpolation to get a score from 0-5 based on the manually found averages of agreement errors from the high/low essays.
 
 ### cii-score (verbMistakes(), sample_code_2.py)
 There are a few checks to look for verb mistakes.
@@ -60,6 +64,8 @@ After passing in the sentence, it is parsed through the NLTK's CoreNLPParser. Th
 1. The sentence should not start with a verb, or the sentence should start with an auxiliary or with a wh-word. If any of these conditions fail based on pos tagging, the count for mistakes increments by 1.
 2.  For each subtree, the program iterates through its children, and then checks if it is missing any determiners, prepositional phrases, and missing prepositions. If there are any missing words or consitituents based on the pos tagging then the count for mistakes increments by 1.
 3. For subordinate clauses, the program checks if there is a missing main verb or subordinating conjuction, and then the count for mistakes increments by 1. 
+
+The scoring for the syntacticWellFormedness function involves analyzing the syntactic structure and grammatical correctness of each sentence within the tokenized sentences and using interpolation to get a score from 0-5 based on the manually found averages of syntactic structure errors from the high/low essays.
 
 ### di-score (semanticsPragmatics(), sample_code_4.py)
 explanation...
