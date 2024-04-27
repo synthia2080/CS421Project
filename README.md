@@ -6,6 +6,8 @@ Teammate 2: Sravani Bhamidipaty netid: sbham3
 [link to github](https://github.com/synthia2080/CS421Project.git)
 
 ## How to Run
+First, uncompress w2v.pkl.zip and leave it in root directory (Had to be compressed due to git size limitations)(Same w2v.pkl as in hw3)
+
 python run_project.py
 
 - This assumes a folder hierarchy of:
@@ -15,9 +17,22 @@ python run_project.py
     - ...
  - index.csv
  - run_project.py
+ - w2v.pkl
  - ...
 
 <br>
+
+## Example Output:
+52951.txt:<br>
+<br>&nbsp;a-score: 3.347107438016529
+<br>&nbsp;b-score: 4
+<br>&nbsp;ci-score: 5
+<br>&nbsp;cii-score: 5
+<br>&nbsp;ciii-score: 3.304017821503724
+<br>&nbsp;di-score: 1
+<br>&nbsp;dii-score: 1
+<br>&nbsp;Final Score: 23.302250519040506
+<br>&nbsp;Final grade: high
 
 ## Packages Used
 - Numpy
@@ -27,18 +42,6 @@ python run_project.py
 - argparse
 - os
 - Spellchecker
-
-## Example Output:
-52951.txt:
-    a-score: 3.347107438016529
-    b-score: 4
-    ci-score: 5
-    cii-score: 5
-    ciii-score: 3.304017821503724
-    di-score: 1
-    dii-score: 1
-    Final Score: 23.302250519040506
-    Final grade: high
 
 ## Functions/Explanations for scoring
 
@@ -80,8 +83,10 @@ After passing in the sentence, it is parsed through the NLTK's CoreNLPParser. Th
 
 The scoring for the syntacticWellFormedness function involves analyzing the syntactic structure and grammatical correctness of each sentence within the tokenized sentences and using interpolation to get a score from 0-5 based on the manually found averages of syntactic structure errors from the high/low essays.
 
-### di-score (semanticsPragmatics(), sample_code_4.py)
-explanation...
+### di-score/dii-score (semanticsPragmatics(), sample_code_4.py)
+This function, semanticsPragmatics(), handles both the di and dii score.
+It takes in the tokenized sentences and the corresponding prompt as parameters, gets the embedding for each sentence/the prompt, for words in w2v that are content, non-stop, and non-punct. Then it gets the average for the sentence and stores it in a list.
+From there we use the averages to get the cosine similarity between each sentence averages and the prompt, then getting the average similarty for the essay to map into a di score from high/low thresholds we got after seperate experimentation.
 
-### dii-score (semanticsPragmatics(), sample_code_4.py)
-explanation...
+For dii score we run through the averaged sentence embeddings, and simply checking the cosine similary between the current sentence and the one in front, except for the final sentence. Then we calculate the standard deviation, and after finding the average deviations between high/low grades in a seperate experiment, we map those thresholds to get our final dii score. 
+

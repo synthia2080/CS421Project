@@ -4,8 +4,6 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 import nltk
 import os
 import pandas as pd
-from sample_code_1 import num_sentences
-import gensim.downloader as api
 import spacy
 
 spacy_processor = spacy.load("en_core_web_sm")
@@ -141,7 +139,7 @@ def semanticsPragmatics(prompt, tokenized_sentences):
 
     # ***** subscore d.ii *****
     dii_score = 0
-    # essayEmbeddingsAvg = np.array(essay_sentenceEmbeddings).mean(axis=1)
+
     cos_all = []
     for i, cs in enumerate(essay_sentenceEmbeddings):
         if i == len(essay_sentenceEmbeddings)-1:
@@ -155,7 +153,6 @@ def semanticsPragmatics(prompt, tokenized_sentences):
 
     cos_all = np.array(cos_all)
     sde = np.std(cos_all)
-    # print(f"SDE: {sde}")
     sde = sde * 1000
 
     high_threshold = 145
