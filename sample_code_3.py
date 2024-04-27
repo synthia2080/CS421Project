@@ -8,7 +8,6 @@ def syntacticWellFormedness(sentence):
     root = dependency_tree.label()
 
     if root.startswith('VB'):
-        if 'mark' not in dependency_tree.leaves():
             mistakes += 1
     elif root in ['SQ', 'SBARQ']:
         if 'aux' not in dependency_tree.leaves() and 'wh' not in dependency_tree.leaves():

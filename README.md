@@ -55,7 +55,11 @@ After passing in the newly tokenized sentences from num_sentences(), we check th
 The scoring was done similarly to the scoring in num_sentences(), however, the number of mistakes as well as the number of verb tense changes between sentences are normalized. This is to account for longer essays possibly having more mistakes simply because theres more room for error. Normalizing the verb tense changes also helps account for correct tense changes between sentences, which was proven difficult to determine reliably.
 
 ### ciii-score (syntacticWellFormedness(), sample_code_3.py)
-explanation...
+There are a few checks to look for sentence formation.
+After passing in the sentence, it is parsed through the NLTK's CoreNLPParser. Then it checks for 3 conditions:
+1. The sentence should not start with a verb, or the sentence should start with an auxiliary or with a wh-word. If any of these conditions fail based on pos tagging, the count for mistakes increments by 1.
+2.  For each subtree, the program iterates through its children, and then checks if it is missing any determiners, prepositional phrases, and missing prepositions. If there are any missing words or consitituents based on the pos tagging then the count for mistakes increments by 1.
+3. For subordinate clauses, the program checks if there is a missing main verb or subordinating conjuction, and then the count for mistakes increments by 1. 
 
 ### di-score (semanticsPragmatics(), sample_code_4.py)
 explanation...
