@@ -11,7 +11,7 @@ First, uncompress w2v.pkl.zip and leave it in root directory (Had to be compress
 python run_project.py
 
 - This assumes a folder hierarchy of:
-/CS421PROJECT
+<br>/CS421PROJECT
  - essays
     - 1234.txt
     - ...
@@ -19,20 +19,20 @@ python run_project.py
  - run_project.py
  - w2v.pkl
  - ...
-
 <br>
 
 ## Example Output:
-52951.txt:<br>
-<br>&nbsp;a-score: 3.347107438016529
-<br>&nbsp;b-score: 4
-<br>&nbsp;ci-score: 5
-<br>&nbsp;cii-score: 5
-<br>&nbsp;ciii-score: 3.304017821503724
-<br>&nbsp;di-score: 1
-<br>&nbsp;dii-score: 1
-<br>&nbsp;Final Score: 23.302250519040506
-<br>&nbsp;Final grade: high
+*Some functions to take long so do not worry <br><br>
+52951.txt:
+<br>&nbsp;&nbsp;a-score: 3.347107438016529
+<br>&nbsp;&nbsp;b-score: 4
+<br>&nbsp;&nbsp;ci-score: 5
+<br>&nbsp;&nbsp;cii-score: 5
+<br>&nbsp;&nbsp;ciii-score: 3.304017821503724
+<br>&nbsp;&nbsp;di-score: 1
+<br>&nbsp;&nbsp;dii-score: 1
+<br>&nbsp;&nbsp;Final Score: 23.302250519040506
+<br>&nbsp;&nbsp;Final grade: high
 
 ## Packages Used
 - Numpy
