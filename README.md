@@ -6,7 +6,7 @@ Teammate 2: Sravani Bhamidipaty netid: sbham3
 [link to github](https://github.com/synthia2080/CS421Project.git)
 
 ## How to Run
-First, uncompress w2v.pkl.zip and leave it in root directory (Had to be compressed due to git size limitations)(Same w2v.pkl as in hw3)
+First, uncompress w2v.pkl.zip if it's not already and leave it in root directory (Had to be compressed due to git size limitations)(Same w2v.pkl as in hw3)
 
 python run_project.py
 
