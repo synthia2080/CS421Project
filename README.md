@@ -46,6 +46,8 @@ This assumes a folder hierarchy of:
 
 ## Functions/Explanations for scoring
 
+*The prompts are simply read through the index.csv file, using a pandas dataframe to find the row of the filename that is currently being read and getting the prompt.
+
 ### a-score (num_sentences(), sample_code_1.py)
 There were 3 steps in determining where sentences start/end.
 1. use nltk sentence tokenizer as a base since its relatively accurate and a good starting off point
