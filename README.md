@@ -10,7 +10,7 @@ First, uncompress w2v.pkl.zip and leave it in root directory (Had to be compress
 
 python run_project.py
 
-- This assumes a folder hierarchy of:
+This assumes a folder hierarchy of:
 <br>
 /CS421PROJECT
 <br>- essays
