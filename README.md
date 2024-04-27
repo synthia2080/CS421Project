@@ -13,13 +13,13 @@ python run_project.py
 - This assumes a folder hierarchy of:
 <br>
 /CS421PROJECT
-- essays
-    - 1234.txt
-    - ...
-- index.csv
-- run_project.py
-- w2v.pkl
-- ...
+&nbsp;&nbsp;- essays
+&nbsp;&nbsp;&nbsp;&nbsp;- 1234.txt
+&nbsp;&nbsp;&nbsp;&nbsp;- ...
+&nbsp;&nbsp;- index.csv
+&nbsp;&nbsp;- run_project.py
+&nbsp;&nbsp;- w2v.pkl
+&nbsp;&nbsp;- ...
 <br>
 
 ## Example Output:
