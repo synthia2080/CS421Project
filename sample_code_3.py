@@ -39,15 +39,14 @@ def syntacticWellFormedness(tokenized_sentences):
         if 'nsubj' not in dependency_tree.leaves():
             mistakes += 1
         
-    normalized_mistakes = mistakes / len(tokenized_sentences)
-    print(mistakes)
-    high_threshold = 0.1450644548321961
-    low_threshold = 0.39475772146296434
+    normalized_mistakes = float(mistakes) / len(tokenized_sentences)
+    high_threshold = 1.450644548321961
+    low_threshold = 3.9475772146296434
     if normalized_mistakes < high_threshold:
         return 5
     elif normalized_mistakes > low_threshold:
-        return 0
+        return 1
     else:
-        return 1 + 3 * (normalized_mistakes - high_threshold) / (low_threshold - high_threshold)
+        return 1 + 4 * (normalized_mistakes - high_threshold) / (low_threshold - high_threshold)
 
 

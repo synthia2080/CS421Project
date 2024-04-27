@@ -6,15 +6,16 @@ Teammate 2: Sravani Bhamidipaty netid: sbham3
 [link to github](https://github.com/synthia2080/CS421Project.git)
 
 ## How to Run
-You can either run a single essay or a path to a folder of essays
+python run_project.py
 
-<br><ins>For single essays:</ins><br>
-python run_project.py --single_essay "path to essay"
-
-<br><ins>For a folder of essays:</ins><br>
-python run_project.py --folder_path "path to folder"
-
-<br>And that's all! The scores will then simply be printed in the terminal.
+- This assumes a folder hierarchy of:
+/CS421PROJECT
+ - essays
+    - 1234.txt
+    - ...
+ - index.csv
+ - run_project.py
+ - ...
 
 <br>
 
@@ -26,6 +27,18 @@ python run_project.py --folder_path "path to folder"
 - argparse
 - os
 - Spellchecker
+
+## Example Output:
+52951.txt:
+    a-score: 3.347107438016529
+    b-score: 4
+    ci-score: 5
+    cii-score: 5
+    ciii-score: 3.304017821503724
+    di-score: 1
+    dii-score: 1
+    Final Score: 23.302250519040506
+    Final grade: high
 
 ## Functions/Explanations for scoring
 

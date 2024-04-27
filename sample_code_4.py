@@ -9,119 +9,8 @@ import gensim.downloader as api
 import spacy
 
 spacy_processor = spacy.load("en_core_web_sm")
-# # Load the medium model with word vectors
-# SPACY_WORD2VEC = spacy.load('en_core_web_md')
-
-# # Load Google's pre-trained Word2Vec model.
-# GENSIM_WORD2VEC = api.load('word2vec-google-news-300')
 
 EMBEDDING_FILE = "w2v.pkl"
-
-def getAverageSentCount():
-    """
-    Gets averages of number of sentences for high and low grades
-    """
-    index = pd.read_csv("essays_dataset/index.csv", delimiter=";")
-    pathToEssays = "essays_dataset/essays/"
-    essays = []
-
-    #read in essays 
-    for filename in os.listdir(pathToEssays):
-        file_path = os.path.join(pathToEssays, filename)
-
-        with open(file_path, 'r') as file:
-            text = file.read()
-            essays.append((filename, text))
-
-    #Count number of sentences for all essays
-
-    sampled_prompts = ["Do you agree or disagree with the following statement?		Most advertisements make products seem much better than they really are.		Use specific reasons and examples to support your answer.	",
-                       "Do you agree or disagree with the following statement?		Successful people try new things and take risks rather than only doing what they already know how to do well.		Use reasons and examples to support your answer.	"]
-
-    low_sentence_num = 0
-    low_sentence_totalCosineSim = 0
-    high_sentence_num = 0
-    high_sentence_totalCosineSim= 0
-    maxSampledEssays = 10
-    essays_used = []
-    #Get average for correct prompt essays
-    print("Calculating average cosine for correct prompt...")
-    for name, essay in essays:
-        df = index[index['filename'] == name]
-        prompt = df['prompt'].iloc[0]
-        score = df['grade'].iloc[0]
-        
-        # #Check if we already read up to max number of sample for either high or low essays
-        # if score == "high" and high_sentence_num >= maxSampledEssays:
-        #     continue
-        # elif score == "low" and low_sentence_num >= maxSampledEssays:
-        #     continue
-        
-        # print(f" ****{name}")
-        _, tokenized_sentences = num_sentences(essay)
-        promp_essay_cosineSim, dii = semanticsPragmatics(sampled_prompts[0], tokenized_sentences)
-        # print(f"{score} : {dii}")
-        
-        if score == "high":
-            high_sentence_num += 1
-            high_sentence_totalCosineSim += dii
-        else:
-            low_sentence_num += 1
-            low_sentence_totalCosineSim += dii
-
-        # essays_used.append((name, score, essay))
-
-        # #Exit if we read up to max for both high and low essays
-        # if high_sentence_num >= maxSampledEssays and low_sentence_num >= maxSampledEssays:
-        #     break
-
-        # print(f"numHighEssays: {high_sentence_num}, numLowEssays: {low_sentence_num}, {name}, {score}")
-
-    print()
-    #compute averages
-    correctPrompt_high_average = high_sentence_totalCosineSim / high_sentence_num
-    correctPrompt_low_average = low_sentence_totalCosineSim / low_sentence_num
-
-    print(f"Average cosine similarity for correct prompt in 'high' grades: {correctPrompt_high_average}")
-    print(f"Average cosine similarity for correct prompt in 'low' grades: {correctPrompt_low_average}")
-    print()
-
-    #Get averages for incorrect prompt-essay combo
-    # low_sentence_num = 0
-    # low_sentence_totalCosineSim = 0
-    # high_sentence_num = 0
-    # high_sentence_totalCosineSim= 0
-    # maxSampledEssays = 10
-    # #Get average for correct prompt essays
-    # print("Calculating average cosine for incorrect prompt...")
-    # for name, score, essay in essays_used:
-    #     #Check if we already read up to max number of sample for either high or low essays
-    #     if score == "high" and high_sentence_num >= maxSampledEssays:
-    #         continue
-    #     elif score == "low" and low_sentence_num >= maxSampledEssays:
-    #         continue
-
-    #     _, tokenized_sentences = num_sentences(essay)
-    #     promp_essay_cosineSim = semanticsPragmatics(sampled_prompts[1], tokenized_sentences)
-
-    #     if score == "high":
-    #         high_sentence_num += 1
-    #         high_sentence_totalCosineSim += promp_essay_cosineSim
-    #     else:
-    #         low_sentence_num += 1
-    #         low_sentence_totalCosineSim += promp_essay_cosineSim
-    #     #Exit if we read up to max for both high and low essays
-    #     if high_sentence_num >= maxSampledEssays and low_sentence_num >= maxSampledEssays:
-    #         break
-    #     print(f"numHighEssays: {high_sentence_num}, numLowEssays: {low_sentence_num}, {name}, {score}")
-
-    # incorrectPrompt_high_average = high_sentence_totalCosineSim / high_sentence_num
-    # incorrectPrompt_low_average = low_sentence_totalCosineSim / low_sentence_num
-
-    # print(f"Average cosine similarity for incorrect prompt in 'high' grades: {incorrectPrompt_high_average}")
-    # print(f"Average cosine similarity for incorrect prompt in 'low' grades: {incorrectPrompt_low_average}")
-
-
 
 def load_w2v(filepath):
     """
@@ -289,7 +178,7 @@ def semanticsPragmatics(prompt, tokenized_sentences):
 # word2vec = load_w2v(EMBEDDING_FILE)
 # print(string2vec(word2vec, "i love nlp"))
 
-getAverageSentCount()
+# getAverageSentCount()
 
 # prompt = "Do you agree or disagree with the following statement?		Most advertisements make products seem much better than they really are.		Use specific reasons and examples to support your answer.	"
 # essay_path = "1079196.txt"
